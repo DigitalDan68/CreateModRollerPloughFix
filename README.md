@@ -45,3 +45,7 @@ roadbed as well as filling empty spaces. The simulated roller's opt-in
 
 Run `gradle build` (or add a Gradle wrapper and run `gradlew build`). The mod
 JAR is written to `build/libs`.
+
+## Development Disclaimer
+
+This mod was made with assistance from OpenAI Codex using the GPT-5 model.
