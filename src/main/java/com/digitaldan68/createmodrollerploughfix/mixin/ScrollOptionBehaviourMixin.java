@@ -15,6 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -25,6 +26,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(value = ScrollOptionBehaviour.class, remap = false)
 public abstract class ScrollOptionBehaviourMixin {
+
+    @Unique
+    private static final AllIcons createModRollerPloughFix$simulatedBehaviorIcon = new AllIcons(0, 13);
+
+    @Unique
+    private static final INamedIconOptions createModRollerPloughFix$simulatedBehaviorOption = new INamedIconOptions() {
+        @Override
+        public AllIcons getIcon() {
+            return createModRollerPloughFix$simulatedBehaviorIcon;
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return CreateModRollerPloughFix.MOD_ID + ".roller_mode.simulated_behavior";
+        }
+    };
+
+    @Inject(method = "getIconForSelected", at = @At("HEAD"), cancellable = true, remap = false)
+    private void createModRollerPloughFix$useSimulatedIconOnBlock(CallbackInfoReturnable<INamedIconOptions> cir) {
+        ScrollOptionBehaviour<?> behaviour = (ScrollOptionBehaviour<?>) (Object) this;
+        if (behaviour.blockEntity instanceof RollerBlockEntity
+            && Sable.HELPER.getContaining(behaviour.blockEntity) != null
+            && behaviour.getValue() == SimulatedRollerHandler.SIMULATED_PAVING_MODE) {
+            cir.setReturnValue(createModRollerPloughFix$simulatedBehaviorOption);
+        }
+    }
 
     @Inject(method = "createBoard", at = @At("RETURN"), cancellable = true, remap = false)
     private void createModRollerPloughFix$renameSimulatedMode(Player player, BlockHitResult hitResult,
@@ -46,9 +73,6 @@ public abstract class ScrollOptionBehaviourMixin {
 
     private static final class SimulatedModeFormatter extends ScrollOptionSettingsFormatter {
 
-        // User-supplied glyph at the first cell of the new bottom atlas row.
-        private static final AllIcons SIMULATED_BEHAVIOR_ICON = new AllIcons(0, 13);
-
         private final ScrollOptionSettingsFormatter original;
 
         private SimulatedModeFormatter(ScrollOptionSettingsFormatter original) {
@@ -67,7 +91,7 @@ public abstract class ScrollOptionBehaviourMixin {
         @Override
         public AllIcons getIcon(ValueSettings setting) {
             if (setting.value() == SimulatedRollerHandler.SIMULATED_PAVING_MODE) {
-                return SIMULATED_BEHAVIOR_ICON;
+                return createModRollerPloughFix$simulatedBehaviorIcon;
             }
             return original.getIcon(setting);
         }
