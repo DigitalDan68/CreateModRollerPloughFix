@@ -4,8 +4,9 @@ license="MIT"
 
 [[mods]]
 modId="create_mod_roller_plough_fix"
-version="1.0.8"
+version="1.0.9"
 displayName="Create Mod Roller & Plough Fix"
+logoFile="icon.png"
 authors="DigitalDan68"
 description='''
 Allows Create's Mechanical Roller and Mechanical Plough to interact with the main world from Create Aeronautics simulated contraptions.
