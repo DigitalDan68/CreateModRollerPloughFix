@@ -15,6 +15,9 @@ Sable simulated contraptions.
   Tracks** and retains normal Create behavior.
 - The simulated roller uses paving blocks from inventories on the same
   simulated contraption.
+- Ordinary Create rollers keep their native **Clear Blocks and Pave** behavior
+  with Aeronautics/Sable installed, including replacing existing roadbed rather
+  than only filling empty spaces.
 
 ## Requirements
 
