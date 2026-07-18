@@ -1,5 +1,9 @@
 # Create Mod Roller & Plough Fix
 
+<p align="center">
+  <img src="src/main/resources/icon.png" alt="Create Mod Roller & Plough Fix icon" width="240">
+</p>
+
 A NeoForge 1.21.1 addon for Create Aeronautics. It lets Create's Mechanical
 Roller and Mechanical Plough act on blocks in the main world while mounted on
 Sable simulated contraptions.
@@ -18,6 +22,17 @@ Sable simulated contraptions.
 - Ordinary Create rollers keep their native **Clear Blocks and Pave** behavior
   with Aeronautics/Sable installed, including replacing existing roadbed rather
   than only filling empty spaces.
+
+## Normal Roller Paving Fix
+
+Create Aeronautics/Sable can interrupt Create's usual break-then-pave flow
+when a Mechanical Roller encounters existing roadbed. This addon restores the
+native Create roller ticker for ordinary, main-world contraptions while leaving
+the Sable sub-level behavior in place for simulated contraptions.
+
+As a result, **Clear Blocks and Pave** once again replaces valid existing
+roadbed as well as filling empty spaces. The simulated roller's opt-in
+**Simulated Behavior** mode remains separate and unchanged.
 
 ## Requirements
 
