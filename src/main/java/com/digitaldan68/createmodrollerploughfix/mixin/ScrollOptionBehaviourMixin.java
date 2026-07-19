@@ -2,6 +2,7 @@ package com.digitaldan68.createmodrollerploughfix.mixin;
 
 import com.digitaldan68.createmodrollerploughfix.CreateModRollerPloughFix;
 import com.digitaldan68.createmodrollerploughfix.SimulatedRollerHandler;
+import com.digitaldan68.createmodrollerploughfix.client.SimulatedBehaviorIcon;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour.ValueSettings;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
@@ -28,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ScrollOptionBehaviourMixin {
 
     @Unique
-    private static final AllIcons createModRollerPloughFix$simulatedBehaviorIcon = new AllIcons(0, 13);
+    private static final AllIcons createModRollerPloughFix$simulatedBehaviorIcon = SimulatedBehaviorIcon.INSTANCE;
 
     @Unique
     private static final INamedIconOptions createModRollerPloughFix$simulatedBehaviorOption = new INamedIconOptions() {

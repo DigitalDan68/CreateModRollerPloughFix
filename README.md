@@ -19,6 +19,8 @@ Sable simulated contraptions.
   Tracks** and retains normal Create behavior.
 - The simulated roller uses paving blocks from inventories on the same
   simulated contraption.
+- Simulated roller animation eases naturally to a stop when the contraption
+  reverses, instead of snapping back to its default wheel position.
 - Ordinary Create rollers keep their native **Clear Blocks and Pave** behavior
   with Aeronautics/Sable installed, including replacing existing roadbed rather
   than only filling empty spaces.
@@ -49,3 +51,14 @@ JAR is written to `build/libs`.
 ## Development Disclaimer
 
 This mod was made with assistance from OpenAI Codex using the GPT-5 model.
+
+## Licensing and Attribution
+
+This addon's original code and artwork are licensed under the MIT License.
+It contains adapted MIT-licensed Create code for the ordinary roller paving
+compatibility fix; the required attribution and full license text are included
+in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the built JAR.
+
+The custom **Simulated Behavior** icon is supplied from this mod's own asset
+namespace. This addon does not ship or override Create, Sable, or Create
+Aeronautics assets, and it is not affiliated with or endorsed by their teams.

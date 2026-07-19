@@ -7,6 +7,8 @@ import dev.ryanhcode.sable.api.block.BlockEntitySubLevelActor;
 import dev.ryanhcode.sable.api.sublevel.ClientSubLevelContainer;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.sublevel.ClientSubLevel;
+import net.createmod.catnip.math.AngleHelper;
+import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
@@ -17,9 +19,18 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-/** Supplies Create's normal roller renderer with Sable's interpolated velocity. */
+import java.util.Map;
+import java.util.WeakHashMap;
+
+/** Supplies simulated rollers with a Sable-projected, time-integrated wheel animation. */
 @EventBusSubscriber(modid = CreateModRollerPloughFix.MOD_ID, value = Dist.CLIENT)
 public final class SimulatedRollerClientHandler {
+
+    private static final Map<RollerBlockEntity, RollerAnimation> ANIMATIONS = new WeakHashMap<>();
+    private static final float SPEED_EASING = 0.25F;
+    private static final float STOP_THRESHOLD = 0.25F;
+    // Create's HarvesterRenderer advances by animatedSpeed / 20 degrees each tick.
+    private static final float DEGREES_PER_TICK_PER_SPEED = 1.0F / 20.0F;
 
     private SimulatedRollerClientHandler() {
     }
@@ -43,13 +54,54 @@ public final class SimulatedRollerClientHandler {
                 }
                 Vec3 velocity = Sable.HELPER.getVelocity(level, subLevel, roller.getBlockPos().getCenter());
                 Vec3 facing = projectedFacing(level, roller);
-                roller.setAnimatedSpeed(roller.mode != null
+                float targetSpeed = roller.mode != null
                     && roller.mode.getValue() == SimulatedRollerHandler.SIMULATED_PAVING_MODE
                     && velocity.dot(facing) > 0
                     ? animationSpeed(velocity.length())
-                    : 0);
+                    : 0;
+                updateAnimation(roller, targetSpeed);
             }
         }
+    }
+
+    /**
+     * Advances a time-integrated animation phase. Create's stock renderer
+     * derives the angle from render time and speed directly, which resets the
+     * wheel to its default angle when the simulated contraption reverses.
+     */
+    private static void updateAnimation(RollerBlockEntity roller, float targetSpeed) {
+        RollerAnimation animation = ANIMATIONS.get(roller);
+        if (animation == null && targetSpeed == 0) {
+            roller.setAnimatedSpeed(0);
+            return;
+        }
+
+        if (animation == null) {
+            animation = new RollerAnimation();
+            ANIMATIONS.put(roller, animation);
+        }
+
+        animation.tick(targetSpeed);
+        roller.setAnimatedSpeed(animation.speed);
+    }
+
+    public static boolean hasEasedAnimation(RollerBlockEntity roller) {
+        return ANIMATIONS.containsKey(roller);
+    }
+
+    public static void transformEased(RollerBlockEntity roller, Direction facing, SuperByteBuffer buffer,
+                                      Vec3 rotationOffset, float partialTicks) {
+        RollerAnimation animation = ANIMATIONS.get(roller);
+        if (animation == null) {
+            return;
+        }
+
+        Vec3 pivotOffset = new Vec3(0, rotationOffset.y * 0.0625F, rotationOffset.z * 0.0625F);
+        float angle = animation.angle(partialTicks);
+        buffer.rotateCentered(AngleHelper.rad(AngleHelper.horizontalAngle(facing)), Direction.UP)
+            .translate(pivotOffset)
+            .rotate(AngleHelper.rad(angle), Direction.WEST)
+            .translate(pivotOffset.scale(-1));
     }
 
     private static Vec3 projectedFacing(ClientLevel level, RollerBlockEntity roller) {
@@ -68,5 +120,33 @@ public final class SimulatedRollerClientHandler {
         }
         // Match MovementContext#getAnimationSpeed() for a moving Create actor.
         return -((int) (blocksPerTick * 1000.0 + 100.0) / 100) * 100.0F;
+    }
+
+    private static final class RollerAnimation {
+
+        private float previousAngle;
+        private float speed;
+
+        private void tick(float targetSpeed) {
+            previousAngle = wrapAngle(previousAngle + speed * DEGREES_PER_TICK_PER_SPEED);
+            if (targetSpeed == 0) {
+                speed += (targetSpeed - speed) * SPEED_EASING;
+                if (Math.abs(speed) < STOP_THRESHOLD) {
+                    speed = 0;
+                }
+            } else {
+                // Preserve Create's normal full-speed forward animation.
+                speed = targetSpeed;
+            }
+        }
+
+        private float angle(float partialTicks) {
+            return previousAngle + speed * DEGREES_PER_TICK_PER_SPEED * partialTicks;
+        }
+
+        private static float wrapAngle(float angle) {
+            float wrapped = angle % 360.0F;
+            return wrapped < 0 ? wrapped + 360.0F : wrapped;
+        }
     }
 }

@@ -1,0 +1,11 @@
+Create Mod Roller & Plough Fix - Third-Party Notices
+
+This distribution contains adapted code from Create's
+BlockBreakingMovementBehaviour in
+com.digitaldan68.createmodrollerploughfix.mixin.RollerMovementBehaviourMixin,
+and follows Create's roller and harvester animation transformation pattern.
+
+Copyright (c) The Create Team / The Creators of Create
+Licensed under the MIT License. The complete license text is in
+META-INF/LICENSES/Create-MIT.txt.
+Source: https://github.com/Creators-of-Create/Create

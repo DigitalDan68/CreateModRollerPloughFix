@@ -71,6 +71,10 @@ tasks.named('processResources', ProcessResources).configure {
     filesMatching('META-INF/neoforge.mods.toml') {
         expand(replaceProperties)
     }
+    from(rootProject.file('LICENSE')) {
+        into('META-INF/LICENSES')
+        rename { 'CreateModRollerPloughFix-MIT.txt' }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

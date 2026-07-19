@@ -8,7 +8,8 @@
     "RollerMovementBehaviourMixin"
   ],
   "client": [
-    "ScrollOptionBehaviourMixin"
+    "ScrollOptionBehaviourMixin",
+    "RollerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -26,9 +26,10 @@ public abstract class RollerMovementBehaviourMixin extends BlockBreakingMovement
             return;
         }
 
-        // This is Create 6.0.10's original BlockBreakingMovementBehaviour
-        // ticker. Defining it on RollerMovementBehaviour prevents Sable's
-        // generic block-breaker mixin from cancelling ordinary roller paving.
+        // Adapted from Create 6.0.10's BlockBreakingMovementBehaviour ticker.
+        // See THIRD_PARTY_NOTICES.md for the Create MIT attribution.
+        // Defining it on RollerMovementBehaviour prevents Sable's generic
+        // block-breaker mixin from cancelling ordinary roller paving.
         tickBreaker(context);
 
         CompoundTag data = context.data;
