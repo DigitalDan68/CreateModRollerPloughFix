@@ -1,4 +1,4 @@
-# Create Mod Roller & Plough Fix
+# Create Aeronautics Roller & Plough Fix
 
 <p align="center">
   <img src="src/main/resources/icon.png" alt="Create Mod Roller & Plough Fix icon" width="240">
