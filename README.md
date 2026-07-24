@@ -1,4 +1,4 @@
-# Create Aeronautics Roller & Plough Fix
+# Create Aeronautics Addon: Plough & Roll!
 
 <p align="center">
   <img src="src/main/resources/icon.png" alt="Create Mod Roller & Plough Fix icon" width="240">
@@ -58,7 +58,3 @@ This addon's original code and artwork are licensed under the MIT License.
 It contains adapted MIT-licensed Create code for the ordinary roller paving
 compatibility fix; the required attribution and full license text are included
 in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the built JAR.
-
-The custom **Simulated Behavior** icon is supplied from this mod's own asset
-namespace. This addon does not ship or override Create, Sable, or Create
-Aeronautics assets, and it is not affiliated with or endorsed by their teams.
