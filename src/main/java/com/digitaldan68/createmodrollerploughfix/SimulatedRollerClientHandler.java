@@ -1,5 +1,6 @@
 package com.digitaldan68.createmodrollerploughfix;
 
+import com.digitaldan68.createmodrollerploughfix.config.SimulatedBehaviorConfig;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlockEntity;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlock;
 import dev.ryanhcode.sable.Sable;
@@ -27,7 +28,6 @@ import java.util.WeakHashMap;
 public final class SimulatedRollerClientHandler {
 
     private static final Map<RollerBlockEntity, RollerAnimation> ANIMATIONS = new WeakHashMap<>();
-    private static final float SPEED_EASING = 0.25F;
     private static final float STOP_THRESHOLD = 0.25F;
     // Create's HarvesterRenderer advances by animatedSpeed / 20 degrees each tick.
     private static final float DEGREES_PER_TICK_PER_SPEED = 1.0F / 20.0F;
@@ -37,6 +37,11 @@ public final class SimulatedRollerClientHandler {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
+        if (!SimulatedBehaviorConfig.isSimulatedRollerEnabled()) {
+            clearAnimations();
+            return;
+        }
+
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {
             return;
@@ -86,7 +91,7 @@ public final class SimulatedRollerClientHandler {
     }
 
     public static boolean hasEasedAnimation(RollerBlockEntity roller) {
-        return ANIMATIONS.containsKey(roller);
+        return SimulatedBehaviorConfig.isSimulatedRollerEnabled() && ANIMATIONS.containsKey(roller);
     }
 
     public static void transformEased(RollerBlockEntity roller, Direction facing, SuperByteBuffer buffer,
@@ -122,6 +127,13 @@ public final class SimulatedRollerClientHandler {
         return -((int) (blocksPerTick * 1000.0 + 100.0) / 100) * 100.0F;
     }
 
+    private static void clearAnimations() {
+        for (RollerBlockEntity roller : ANIMATIONS.keySet()) {
+            roller.setAnimatedSpeed(0);
+        }
+        ANIMATIONS.clear();
+    }
+
     private static final class RollerAnimation {
 
         private float previousAngle;
@@ -130,7 +142,7 @@ public final class SimulatedRollerClientHandler {
         private void tick(float targetSpeed) {
             previousAngle = wrapAngle(previousAngle + speed * DEGREES_PER_TICK_PER_SPEED);
             if (targetSpeed == 0) {
-                speed += (targetSpeed - speed) * SPEED_EASING;
+                speed += (targetSpeed - speed) * SimulatedBehaviorConfig.simulatedRollerReverseAnimationEasing();
                 if (Math.abs(speed) < STOP_THRESHOLD) {
                     speed = 0;
                 }

@@ -1,5 +1,6 @@
 package com.digitaldan68.createmodrollerploughfix;
 
+import com.digitaldan68.createmodrollerploughfix.config.SimulatedBehaviorConfig;
 import com.mojang.authlib.GameProfile;
 import com.simibubi.create.content.contraptions.actors.plough.PloughBlock;
 import dev.ryanhcode.sable.Sable;
@@ -51,6 +52,11 @@ public final class SimulatedPloughHandler {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
+        if (!SimulatedBehaviorConfig.isSimulatedPloughEnabled()) {
+            LAST_WORLD_POSITIONS.clear();
+            return;
+        }
+
         for (ServerLevel level : event.getServer().getAllLevels()) {
             ServerSubLevelContainer container = SubLevelContainer.getContainer(level);
             if (container == null) {

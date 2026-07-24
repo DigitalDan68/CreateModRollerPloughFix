@@ -3,6 +3,7 @@ package com.digitaldan68.createmodrollerploughfix.mixin;
 import com.digitaldan68.createmodrollerploughfix.CreateModRollerPloughFix;
 import com.digitaldan68.createmodrollerploughfix.SimulatedRollerHandler;
 import com.digitaldan68.createmodrollerploughfix.client.SimulatedBehaviorIcon;
+import com.digitaldan68.createmodrollerploughfix.config.SimulatedBehaviorConfig;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour.ValueSettings;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
@@ -48,6 +49,7 @@ public abstract class ScrollOptionBehaviourMixin {
     private void createModRollerPloughFix$useSimulatedIconOnBlock(CallbackInfoReturnable<INamedIconOptions> cir) {
         ScrollOptionBehaviour<?> behaviour = (ScrollOptionBehaviour<?>) (Object) this;
         if (behaviour.blockEntity instanceof RollerBlockEntity
+            && SimulatedBehaviorConfig.isSimulatedRollerEnabled()
             && Sable.HELPER.getContaining(behaviour.blockEntity) != null
             && behaviour.getValue() == SimulatedRollerHandler.SIMULATED_PAVING_MODE) {
             cir.setReturnValue(createModRollerPloughFix$simulatedBehaviorOption);
@@ -59,6 +61,7 @@ public abstract class ScrollOptionBehaviourMixin {
                                                                CallbackInfoReturnable<ValueSettingsBoard> cir) {
         ScrollOptionBehaviour<?> behaviour = (ScrollOptionBehaviour<?>) (Object) this;
         if (!(behaviour.blockEntity instanceof RollerBlockEntity)
+            || !SimulatedBehaviorConfig.isSimulatedRollerEnabled()
             || Sable.HELPER.getContaining(behaviour.blockEntity) == null) {
             return;
         }

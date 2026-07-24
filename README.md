@@ -36,6 +36,29 @@ As a result, **Clear Blocks and Pave** once again replaces valid existing
 roadbed as well as filling empty spaces. The simulated roller's opt-in
 **Simulated Behavior** mode remains separate and unchanged.
 
+## Configuration
+
+The mod creates a server-synchronised configuration file named
+`create_mod_roller_plough_fix-server.toml`. In singleplayer, it is stored in
+the world's `serverconfig` folder; on a dedicated server, it is in that
+server world's `serverconfig` folder. Its values are sent to connected
+players, so the Roller's mode label and animation match the server's behavior.
+
+All settings default to the current behavior:
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| `simulated_behavior.enabled` | `true` | Master switch for every simulated-contraption feature added by this mod. |
+| `simulated_behavior.mechanical_plough.enabled` | `true` | Lets Mechanical Ploughs act in the main world from Sable contraptions. |
+| `simulated_behavior.mechanical_roller.enabled` | `true` | Lets Mechanical Rollers use **Simulated Behavior** from Sable contraptions. When off, the mode returns to Aeronautics' normal **Replace Tracks** label. |
+| `simulated_behavior.mechanical_roller.clear_headroom_blocks` | `2` | Number of blocks above the paved surface cleared by a simulated Roller (`0`–`2`). |
+| `simulated_behavior.mechanical_roller.consume_paving_materials` | `true` | Requires paving blocks to be taken from an inventory on the same simulated contraption. |
+| `simulated_behavior.mechanical_roller.reverse_animation_easing` | `0.25` | Controls how gradually a simulated Roller wheel stops after reversing; `1.0` stops immediately. |
+
+These settings affect only Sable simulated contraptions. The ordinary
+Mechanical Roller **Clear Blocks and Pave** compatibility fix remains enabled
+for normal, non-simulated contraptions regardless of this config.
+
 ## Requirements
 
 - Minecraft 1.21.1 with NeoForge

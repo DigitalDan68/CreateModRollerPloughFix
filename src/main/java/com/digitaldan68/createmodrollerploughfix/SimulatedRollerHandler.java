@@ -1,5 +1,6 @@
 package com.digitaldan68.createmodrollerploughfix;
 
+import com.digitaldan68.createmodrollerploughfix.config.SimulatedBehaviorConfig;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlock;
 import com.simibubi.create.content.contraptions.actors.roller.RollerBlockEntity;
 import com.simibubi.create.content.contraptions.actors.roller.RollerMovementBehaviour;
@@ -45,6 +46,12 @@ public final class SimulatedRollerHandler {
         // The first version used the roller's own block position, which put
         // paving one block above Create's normal target surface.
         BlockPos worldPos = projectedActivePosition(level, localPos, roller.getBlockState());
+        // Continue tracking the projected position while disabled. This makes
+        // a live config change safe: enabling the feature cannot pave a path
+        // the roller travelled while it was off.
+        if (!SimulatedBehaviorConfig.isSimulatedRollerEnabled()) {
+            return worldPos;
+        }
         if (worldPos.equals(previousWorldPos)) {
             return previousWorldPos;
         }
@@ -96,7 +103,7 @@ public final class SimulatedRollerHandler {
 
         // The simulated Replace Tracks mode behaves as Clear Blocks and Pave:
         // replace the surface and clear only its two blocks of headroom.
-        for (int y = 1; y <= 2; y++) {
+        for (int y = 1; y <= SimulatedBehaviorConfig.simulatedRollerClearHeadroomBlocks(); y++) {
             BlockPos target = position.relative(up, y);
             if (canRollThrough(level, target)) {
                 level.destroyBlock(target, true);
@@ -127,7 +134,8 @@ public final class SimulatedRollerHandler {
             && !BlockBreakingKineticBlockEntity.isBreakable(existing, existing.getDestroySpeed(level, target))) {
             return;
         }
-        if (!consumeMaterial(level, subLevel, filter)) {
+        if (SimulatedBehaviorConfig.simulatedRollerConsumesPavingMaterials()
+            && !consumeMaterial(level, subLevel, filter)) {
             return;
         }
         level.setBlockAndUpdate(target, toPlace);
